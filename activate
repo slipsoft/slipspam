@@ -1,0 +1,9 @@
+#!/bin/bash
+if [ ! -f ./dev/bin/activate ]
+then
+	pip3 install virtualenv
+	virtualenv -p $(which python3) dev
+fi
+git config core.hooksPath .githooks
+. dev/bin/activate
+pip3 install -r requirements.txt
