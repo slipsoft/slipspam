@@ -37,6 +37,12 @@ This will install and activate a virtual python environment in the dev directory
 . activate
 ```
 
+### Running
+
+```
+python3 main.py
+```
+
 ### Deactivating
 
 To deactivate the virtual environment, simply type `deactivate`

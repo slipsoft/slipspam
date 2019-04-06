@@ -16,12 +16,12 @@ class Algorithm(ABC):
         self.initSets()
 
     def initSets(self):
-        with open('./Data/spambase.trainingset.csv') as csvDataFile:
+        with open('./data/spambase.trainingset.csv') as csvDataFile:
             csvReader = csv.reader(csvDataFile)
             for row in csvReader:
                 self.trainingset_labels.append(int(row.pop()))
                 self.trainingset_features.append(list(map(lambda x: float(x), row)))
-        with open('./Data/spambase.testset.csv') as csvDataFile:
+        with open('./data/spambase.testset.csv') as csvDataFile:
             csvReader = csv.reader(csvDataFile)
             for row in csvReader:
                 self.testset_labels.append(int(row.pop()))
