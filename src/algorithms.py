@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score
 import csv
 
 
@@ -26,6 +27,10 @@ class Algorithm(ABC):
                 self.testset_labels.append(int(row.pop()))
                 self.testset_features.append(list(map(lambda x: float(x), row)))
 
+    def test(self):
+        return accuracy_score(self.testset_labels, self.run())
+
+    # instanciate the model, fit it, run it then return the predictions
     @abstractmethod
     def run(self):
         pass
@@ -43,3 +48,17 @@ class NaiveBayes(Algorithm):
         # Predict Output
         predicted = self.model.predict(self.testset_features)
         print("Predicted Value:", predicted)
+
+        return predicted
+
+
+class Svn(Algorithm):
+    pass
+
+
+class Knn(Algorithm):
+    pass
+
+
+class GradientBoosting(Algorithm):
+    pass
