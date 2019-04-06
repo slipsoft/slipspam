@@ -13,6 +13,13 @@ how to deploy the project on a live system.
 
 -   `python3`
 -   `pip3`
+-   Tkinter
+
+#### Debian
+
+```bash
+sudo apt install python3 python3-pip python3-tk
+```
 
 ### Installing
 

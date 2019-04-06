@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from sklearn.naive_bayes import GaussianNB
-from sklearn import preprocessing
 import csv
 
 
