@@ -1,4 +1,4 @@
-# SlipSpam
+# ![SlipSpam](docs/slipspam.png)
 
 Ultimate spam detector
 
@@ -17,9 +17,7 @@ how to deploy the project on a live system.
 
 #### Debian
 
-```bash
-sudo apt install python3 python3-pip python3-tk
-```
+    sudo apt install python3 python3-pip python3-tk
 
 ### Installing
 
@@ -27,21 +25,15 @@ This will install and activate a virtual python environment in the dev directory
 
 #### Windows
 
-```
-.\activate
-```
+    .\activate
 
 #### Unix
 
-```
-. activate
-```
+    . activate
 
 ### Running
 
-```
-python3 main.py
-```
+    python3 main.py
 
 ### Deactivating
 
