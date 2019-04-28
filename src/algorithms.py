@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
-from src.dataset import Dataset
+from .dataset import Dataset
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.naive_bayes import GaussianNB
 from sklearn import svm
+from sklearn.neural_network import MLPClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import accuracy_score
 
@@ -46,7 +47,6 @@ class NaiveBayes(Algorithm):
         model.fit(self.set.train_feat, self.set.train_labl)
         # Predict Output
         predicted = model.predict(self.set.test_feat)
-        print("Predicted Value:", predicted)
         return predicted
 
     def unscaled(self):
@@ -61,8 +61,10 @@ class NaiveBayes(Algorithm):
 
     def scaled(self):
         # Create a Gaussian Classifier
-        model = make_pipeline(StandardScaler(), PCA(
-            n_components=2), GaussianNB())
+        model = make_pipeline(
+            StandardScaler(),
+            PCA(n_components=2),
+            GaussianNB())
 
         # Train the model using pipelined scaling, GNB and PCA.
         model.fit(self.set.train_feat, self.set.train_labl)
@@ -87,3 +89,20 @@ class Knn(Algorithm):
 
 class GradientBoosting(Algorithm):
     pass
+
+
+class Mpl(Algorithm):
+    def configurations(self):
+        return [self.scaled]
+
+    def scaled(self):
+        clf = MLPClassifier(
+            solver='lbfgs',
+            alpha=0.1,
+            hidden_layer_sizes=(5, 2),
+            random_state=1)
+        model = make_pipeline(
+            StandardScaler(),
+            clf)
+        model.fit(self.set.train_feat, self.set.train_labl)
+        return model.predict(self.set.test_feat)
