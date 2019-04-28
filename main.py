@@ -1,4 +1,5 @@
-from src.algorithms import NaiveBayes
+from src.algorithms import NaiveBayes, Svm
 
 naive_bayes = NaiveBayes()
-print(naive_bayes.test())
+svm = Svm()
+print(naive_bayes.test(), svm.test())

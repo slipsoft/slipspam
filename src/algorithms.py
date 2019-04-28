@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.naive_bayes import GaussianNB
+from sklearn import svm
 from sklearn.model_selection import train_test_split
 from sklearn.datasets.base import load_data
 from sklearn.pipeline import make_pipeline
@@ -47,10 +48,20 @@ class Algorithm(ABC):
 class NaiveBayes(Algorithm):
 
     def configurations(self):
-        return [self.unscaled, self.scaled]
+        return [self.basic, self.unscaled, self.scaled]
+
+    def basic(self):
+        """This is an exemple of an algorithm's most basic implementation"""
+        # Create a Gaussian Classifier
+        model = GaussianNB()
+        # Train the model
+        model.fit(self.train_feat, self.train_labl)
+        # Predict Output
+        predicted = model.predict(self.test_feat)
+        print("Predicted Value:", predicted)
+        return predicted
 
     def unscaled(self):
-
         # Create a Gaussian Classifier
         model = make_pipeline(PCA(n_components=2), GaussianNB())
 
@@ -58,13 +69,9 @@ class NaiveBayes(Algorithm):
         model.fit(self.train_feat, self.train_labl)
 
         # Predict Output
-        predicted = model.predict(self.test_feat)
-        print("Predicted Value:", predicted)
-
-        return predicted
+        return model.predict(self.test_feat)
 
     def scaled(self):
-
         # Create a Gaussian Classifier
         model = make_pipeline(StandardScaler(), PCA(
             n_components=2), GaussianNB())
@@ -73,14 +80,17 @@ class NaiveBayes(Algorithm):
         model.fit(self.train_feat, self.train_labl)
 
         # Predict Output
-        predicted = model.predict(self.test_feat)
-        print("Predicted Value:", predicted)
-
-        return predicted
+        return model.predict(self.test_feat)
 
 
-class Svn(Algorithm):
-    pass
+class Svm(Algorithm):
+    def configurations(self):
+        return [self.basic]
+
+    def basic(self):
+        model = svm.SVC(gamma='auto')
+        model.fit(self.train_feat, self.train_labl)
+        return model.predict(self.test_feat)
 
 
 class Knn(Algorithm):
