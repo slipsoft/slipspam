@@ -1,43 +1,31 @@
 from abc import ABC, abstractmethod
+from src.dataset import Dataset
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.naive_bayes import GaussianNB
 from sklearn import svm
-from sklearn.model_selection import train_test_split
-from sklearn.datasets.base import load_data
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import accuracy_score
 
 
 class Algorithm(ABC):
-    """ Abstract class representing a machine learning algorithm.
+    """Abstract class representing a machine learning algorithm.
 
     Each subclass must implement these functions:
 
         - def configurations(self)
     """
 
-    def __init__(self):
+    def __init__(self, dataset: Dataset):
         super().__init__()
-        self.train_feat = []
-        self.train_labl = []
-        self.test_feat = []
-        self.test_labl = []
-        self.initSets()
-
-    def initSets(self):
-        """Init the datasets features and labels from the data directory's csv files"""
-        features, labels, _ = load_data(".", "spambase.csv")
-        self.train_feat, self.test_feat, self.train_labl, self.test_labl = train_test_split(features, labels, test_size=0.20)
+        self.set = dataset
 
     def test(self):
         """Run the algorithm and return the accuracy of its predictions"""
-        return [
-            {
-                'function': func.__name__,
-                'accuracy': accuracy_score(func(), self.test_labl)
-            }
-            for func in self.configurations()]
+        return [{
+            'function': func.__name__,
+            'accuracy': accuracy_score(func(), self.set.test_labl)
+        } for func in self.configurations()]
 
     @abstractmethod
     def configurations(self):
@@ -55,9 +43,9 @@ class NaiveBayes(Algorithm):
         # Create a Gaussian Classifier
         model = GaussianNB()
         # Train the model
-        model.fit(self.train_feat, self.train_labl)
+        model.fit(self.set.train_feat, self.set.train_labl)
         # Predict Output
-        predicted = model.predict(self.test_feat)
+        predicted = model.predict(self.set.test_feat)
         print("Predicted Value:", predicted)
         return predicted
 
@@ -66,10 +54,10 @@ class NaiveBayes(Algorithm):
         model = make_pipeline(PCA(n_components=2), GaussianNB())
 
         # Train the model using pipelined GNB and PCA.
-        model.fit(self.train_feat, self.train_labl)
+        model.fit(self.set.train_feat, self.set.train_labl)
 
         # Predict Output
-        return model.predict(self.test_feat)
+        return model.predict(self.set.test_feat)
 
     def scaled(self):
         # Create a Gaussian Classifier
@@ -77,10 +65,10 @@ class NaiveBayes(Algorithm):
             n_components=2), GaussianNB())
 
         # Train the model using pipelined scaling, GNB and PCA.
-        model.fit(self.train_feat, self.train_labl)
+        model.fit(self.set.train_feat, self.set.train_labl)
 
         # Predict Output
-        return model.predict(self.test_feat)
+        return model.predict(self.set.test_feat)
 
 
 class Svm(Algorithm):
@@ -89,8 +77,8 @@ class Svm(Algorithm):
 
     def basic(self):
         model = svm.SVC(gamma='auto')
-        model.fit(self.train_feat, self.train_labl)
-        return model.predict(self.test_feat)
+        model.fit(self.set.train_feat, self.set.train_labl)
+        return model.predict(self.set.test_feat)
 
 
 class Knn(Algorithm):

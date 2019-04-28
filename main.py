@@ -1,5 +1,10 @@
 from src.algorithms import NaiveBayes, Svm
+from src.dataset import Dataset
 
-naive_bayes = NaiveBayes()
-svm = Svm()
-print(naive_bayes.test(), svm.test())
+dataset = Dataset()
+for algo, name in [
+    (NaiveBayes, 'Naive Bayes'),
+    (Svm, 'Support Vector Machine')
+]:
+    instance = algo(dataset)
+    print(name, instance.test())
