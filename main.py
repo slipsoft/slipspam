@@ -5,7 +5,7 @@ algos = [
     (NaiveBayes, 'Naive Bayes'),
     (Svm, 'Support Vector Machine'),
     # (Knn, 'K Nearest Neighbours'),
-    # (GradientBoosting, 'Gradient Boosting'),
+    (GradientBoosting, 'Gradient Boosting'),
     (Mpl, 'Multi-layer Perceptron'),
 ]
 dataset = Dataset()
