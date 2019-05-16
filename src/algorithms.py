@@ -53,14 +53,11 @@ class Algorithm(ABC):
 class NaiveBayes(Algorithm):
 
     def configurations(self):
-        return [self.basic, self.unscaled, self.scaled]
+        return [self.basic, self.scaled]
 
     def basic(self):
         """This is an exemple of an algorithm's most basic implementation"""
         return GaussianNB()
-
-    def unscaled(self):
-        return make_pipeline(PCA(n_components=2), GaussianNB())
 
     def scaled(self):
         return make_pipeline(

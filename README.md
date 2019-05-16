@@ -2,6 +2,8 @@
 
 Ultimate spam detector
 
+![algorithms benchmark chart](docs/benchmark1.png)
+
 
 ## Getting Started
 
