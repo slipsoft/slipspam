@@ -12,8 +12,10 @@ class Dataset:
     - test_labl:  label (result) of each entry to test
     """
 
-    def __init__(self):
+    def __init__(self, file="spambase.csv", test_size=0.20):
         super().__init__()
+        self.file = file
+        self.test_size = test_size
         self.train_feat = []
         self.train_labl = []
         self.test_feat = []
@@ -22,5 +24,5 @@ class Dataset:
 
     def initSets(self):
         """Init the datasets features and labels from the data directory's csv files"""
-        features, labels, _ = load_data(".", "spambase.csv")
-        self.train_feat, self.test_feat, self.train_labl, self.test_labl = train_test_split(features, labels, test_size=0.20)
+        features, labels, _ = load_data(".", self.file)
+        self.train_feat, self.test_feat, self.train_labl, self.test_labl = train_test_split(features, labels, test_size=self.test_size)

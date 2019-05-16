@@ -8,7 +8,12 @@ algos = [
     (GradientBoosting, 'Gradient Boosting'),
     (Mpl, 'Multi-layer Perceptron'),
 ]
-dataset = Dataset()
+test_size = 0.2
+dataset = Dataset(test_size=test_size)
 for algo, name in algos:
     instance = algo(dataset)
-    print(name, instance.test())
+    for result in instance.test():
+        print("%s (%s):\n\taccuracy: %9.6f %%\n\tduration: %9.6f s" % (name,
+            result['function'],
+            result['accuracy'] * 100,
+            result['duration']))
