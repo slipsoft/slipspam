@@ -8,6 +8,7 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import accuracy_score
 from sklearn.ensemble import GradientBoostingClassifier as GBC
+from time import time
 
 
 class Algorithm(ABC):
@@ -24,9 +25,11 @@ class Algorithm(ABC):
 
     def test(self):
         """Run the algorithm and return the accuracy of its predictions"""
+        start = time()
         return [{
             'function': func.__name__,
-            'accuracy': accuracy_score(func(), self.set.test_labl)
+            'accuracy': accuracy_score(func(), self.set.test_labl),
+            'duration': time() - start,
         } for func in self.configurations()]
 
     @abstractmethod
@@ -102,8 +105,8 @@ class GradientBoosting(Algorithm):
             criterion='friedman_mse',
             min_samples_split=2, min_samples_leaf=1,
             min_weight_fraction_leaf=0., max_depth=3,
-            min_impurity_decrease=0., min_impurity_split=None, 
-            init=None, random_state=None, max_features=None, 
+            min_impurity_decrease=0., min_impurity_split=None,
+            init=None, random_state=None, max_features=None,
             verbose=0, max_leaf_nodes=None, warm_start=False, presort='auto', validation_fraction=0.1, n_iter_no_change=None, tol=1e-4)
         model.fit(self.set.train_feat, self.set.train_labl)
         return model.predict(self.set.test_feat)
