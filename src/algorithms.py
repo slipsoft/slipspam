@@ -25,16 +25,28 @@ class Algorithm(ABC):
 
     def test(self):
         """Run the algorithm and return the accuracy of its predictions"""
-        start = time()
-        return [{
-            'function': func.__name__,
-            'accuracy': accuracy_score(func(), self.set.test_labl),
-            'duration': time() - start,
-        } for func in self.configurations()]
+        results = []
+        for func in self.configurations():
+            model = func()
+            start = time()
+            # Train the model
+            model.fit(self.set.train_feat, self.set.train_labl)
+            fit_end = time()
+            # Predict Output
+            predicted = model.predict(self.set.test_feat)
+            predict_end = time()
+            results.append({
+                'function': func.__name__,
+                'accuracy': accuracy_score(predicted, self.set.test_labl),
+                'fit_duration': fit_end - start,
+                'predict_duration': predict_end - fit_end,
+                'duration': predict_end - start,
+            })
+        return results
 
     @abstractmethod
     def configurations(self):
-        """Return an array of functions returning predictions"""
+        """Return an array of functions returning a model to fit"""
         pass
 
 
@@ -45,36 +57,16 @@ class NaiveBayes(Algorithm):
 
     def basic(self):
         """This is an exemple of an algorithm's most basic implementation"""
-        # Create a Gaussian Classifier
-        model = GaussianNB()
-        # Train the model
-        model.fit(self.set.train_feat, self.set.train_labl)
-        # Predict Output
-        predicted = model.predict(self.set.test_feat)
-        return predicted
+        return GaussianNB()
 
     def unscaled(self):
-        # Create a Gaussian Classifier
-        model = make_pipeline(PCA(n_components=2), GaussianNB())
-
-        # Train the model using pipelined GNB and PCA.
-        model.fit(self.set.train_feat, self.set.train_labl)
-
-        # Predict Output
-        return model.predict(self.set.test_feat)
+        return make_pipeline(PCA(n_components=2), GaussianNB())
 
     def scaled(self):
-        # Create a Gaussian Classifier
-        model = make_pipeline(
+        return make_pipeline(
             StandardScaler(),
             PCA(n_components=2),
             GaussianNB())
-
-        # Train the model using pipelined scaling, GNB and PCA.
-        model.fit(self.set.train_feat, self.set.train_labl)
-
-        # Predict Output
-        return model.predict(self.set.test_feat)
 
 
 class Svm(Algorithm):
@@ -82,9 +74,7 @@ class Svm(Algorithm):
         return [self.basic]
 
     def basic(self):
-        model = svm.SVC(gamma='auto')
-        model.fit(self.set.train_feat, self.set.train_labl)
-        return model.predict(self.set.test_feat)
+        return svm.SVC(gamma='auto')
 
 
 class Knn(Algorithm):
@@ -98,7 +88,7 @@ class GradientBoosting(Algorithm):
 
     def basic(self):
         model_init = None
-        model = GBC(loss='deviance',
+        return GBC(loss='deviance',
             learning_rate=0.3,
             n_estimators=100,
             subsample=1.0,
@@ -108,8 +98,6 @@ class GradientBoosting(Algorithm):
             min_impurity_decrease=0., min_impurity_split=None,
             init=None, random_state=None, max_features=None,
             verbose=0, max_leaf_nodes=None, warm_start=False, presort='auto', validation_fraction=0.1, n_iter_no_change=None, tol=1e-4)
-        model.fit(self.set.train_feat, self.set.train_labl)
-        return model.predict(self.set.test_feat)
 
 
 class Mpl(Algorithm):
@@ -122,8 +110,6 @@ class Mpl(Algorithm):
             alpha=0.1,
             hidden_layer_sizes=(5, 2),
             random_state=1)
-        model = make_pipeline(
+        return make_pipeline(
             StandardScaler(),
             clf)
-        model.fit(self.set.train_feat, self.set.train_labl)
-        return model.predict(self.set.test_feat)
