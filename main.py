@@ -17,7 +17,8 @@ repetition = 5
 results = {
     'label': {},
     'accuracy': defaultdict(lambda: []),
-    'duration': defaultdict(lambda: []),
+    'fit': defaultdict(lambda: []),
+    'predict': defaultdict(lambda: []),
 }
 for i in range(repetition):
     function = 0
@@ -27,18 +28,23 @@ for i in range(repetition):
         for result in instance.test():
             label = '%s\n(%s)' % (name, result['function'])
             accuracy = result['accuracy'] * 100
-            duration = result['duration']
-            print('%s:\n\taccuracy: %9.6f %%\n\tduration: %9.6f s' % (
+            fit = result['fit_duration']
+            predict = result['predict_duration']
+            print('%s:\n\taccuracy: %9.6f %%\n\tfit:      %9.6f s\n\tpredict:  %9.6f s' % (
                 label,
                 accuracy,
-                duration))
+                fit,
+                predict))
             results['label'][function] = label
             results['accuracy'][function].append(accuracy)
-            results['duration'][function].append(duration)
+            results['fit'][function].append(fit)
+            results['predict'][function].append(predict)
             function += 1
 
 
 labels = results['label'].values()
+fitMeans = np.mean(list(results['fit'].values()), axis=1)
+predictMeans = np.mean(list(results['predict'].values()), axis=1)
 n_groups = len(labels)
 
 # create plot
@@ -48,18 +54,23 @@ bar_width = 0.35
 opacity = 0.5
 
 ax1.set_ylabel('Duration (s)')
-ax1.bar(y_pos, np.mean(list(results['duration'].values()), axis=1), bar_width,
+ax1.bar(y_pos, fitMeans, bar_width,
+alpha=opacity,
+color='r',
+label='Fit')
+ax1.bar(y_pos, predictMeans, bar_width,
+bottom=fitMeans,
 alpha=opacity,
 color='g',
-label='Duration')
+label='Predict')
+ax1.legend()
 
 ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
 ax2.set_ylabel('Accuracy (%)')
 ax2.boxplot(list(results['accuracy'].values()))
 
 plt.title('Algorithm comparision')
-plt.xlabel('Algorithms')
 ax1.set_xticklabels(labels)
 
-fig.legend()
+plt.tight_layout()
 plt.show()
