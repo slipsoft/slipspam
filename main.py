@@ -22,19 +22,42 @@ for algo, name in algos:
     instance = algo(dataset)
     for result in instance.test():
         label = '%s\n(%s)' % (name, result['function'])
-        print('%s:\n\taccuracy: %9.6f %%\n\tduration: %9.6f s' % (label,
-            result['accuracy'] * 100,
-            result['duration']))
+        accuracy = result['accuracy'] * 100
+        duration = result['duration']
+        print('%s:\n\taccuracy: %9.6f %%\n\tduration: %9.6f s' % (
+            label,
+            accuracy,
+            duration))
         results['label'].append(label)
-        results['accuracy'].append(result['accuracy'])
-        results['duration'].append(result['duration'])
+        results['accuracy'].append(accuracy)
+        results['duration'].append(duration)
 
 
-objects = results['label']
-y_pos = np.arange(len(objects))
+labels = results['label']
+n_groups = len(labels)
 
-plt.bar(y_pos, results['accuracy'], align='center', alpha=0.5)
-plt.xticks(y_pos, objects)
-plt.ylabel('Accuracy')
+# create plot
+fig, ax1 = plt.subplots()
+y_pos = np.arange(n_groups)
+bar_width = 0.35
+opacity = 0.5
+
+ax1.set_ylabel('Accuracy (%)')
+ax1.bar(y_pos, results['accuracy'], bar_width,
+alpha=opacity,
+color='b',
+label='Accuracy')
+
+ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
+ax2.set_ylabel('Duration (s)')
+ax2.bar(y_pos + bar_width, results['duration'], bar_width,
+alpha=opacity,
+color='g',
+label='Duration')
+
 plt.title('Algorithm comparision')
+plt.xlabel('Algorithms')
+plt.xticks(y_pos + bar_width, labels)
+
+fig.legend()
 plt.show()
