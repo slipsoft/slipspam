@@ -6,13 +6,13 @@ from collections import defaultdict
 
 algos = [
     (NaiveBayes, 'Naive Bayes'),
-    (Svm, 'Support Vector Machine'),
-    # (Knn, 'K Nearest Neighbours'),
+    (Svm, 'SVM'),
+    # (Knn, 'KNN'),
     (GradientBoosting, 'Gradient Boosting'),
-    (Mpl, 'Multi-layer Perceptron'),
+    (Mpl, 'MLP'),
 ]
 test_size = 0.2
-repetition = 5
+repetition = 1
 
 results = {
     'label': {},
@@ -53,24 +53,28 @@ y_pos = range(1, n_groups + 1)
 bar_width = 0.35
 opacity = 0.5
 
+# duration axis with 2 bars
 ax1.set_ylabel('Duration (s)')
-ax1.bar(y_pos, fitMeans, bar_width,
-alpha=opacity,
-color='r',
-label='Fit')
 ax1.bar(y_pos, predictMeans, bar_width,
 bottom=fitMeans,
 alpha=opacity,
 color='g',
 label='Predict')
-ax1.legend()
+ax1.bar(y_pos, fitMeans, bar_width,
+alpha=opacity,
+color='b',
+label='Fit')
+ax1.legend(loc=2)  # add the legend in the top left corner
 
-ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
+# instantiate a second axes that shares the same x-axis
+# accuracy axis with a boxplot
+ax2 = ax1.twinx()
 ax2.set_ylabel('Accuracy (%)')
 ax2.boxplot(list(results['accuracy'].values()))
 
-plt.title('Algorithm comparision')
-ax1.set_xticklabels(labels)
+plt.title('Algorithm comparision (%d executions)' % repetition)
+ax1.set_xticklabels(labels)  # set ticks and labels on ax1 (otherwise it does not work)
+ax1.tick_params(axis='x', which='major', labelsize=7)  # reduce size of x labels
 
 plt.tight_layout()
 plt.show()
