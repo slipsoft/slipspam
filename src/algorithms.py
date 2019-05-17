@@ -3,14 +3,16 @@ from .dataset import Dataset
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn import svm
 from sklearn.neural_network import MLPClassifier
 from sklearn.pipeline import make_pipeline
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.ensemble import GradientBoostingClassifier as GBC
-from sklearn.neighbors import KNeighborsClassifier
-from time import time
+from sklearn.tree import DecisionTreeClassifier as DTC
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_selection import VarianceThreshold
+from time import time
 
 
 class Algorithm(ABC):
@@ -39,10 +41,11 @@ class Algorithm(ABC):
             predict_end = time()
             results.append({
                 'function': func.__name__,
-                'accuracy': accuracy_score(predicted, self.set.test_labl),
+                'accuracy': accuracy_score(self.set.test_labl, predicted),
                 'fit_duration': fit_end - start,
                 'predict_duration': predict_end - fit_end,
                 'duration': predict_end - start,
+                'confusion': confusion_matrix(self.set.test_labl, predicted),
             })
         return results
 
@@ -73,7 +76,6 @@ class Svm(Algorithm):
         return [self.basic]
 
     def basic(self):
-
         return svm.SVC(gamma='auto')
 
 
@@ -85,23 +87,38 @@ class Knn(Algorithm):
         return KNeighborsClassifier(n_neighbors=5)
 
 
-class GradientBoosting(Algorithm):
+class RFC(Algorithm):
+    def configurations(self):
+        return [self.basic]
+
+    def basic(self):
+        return RandomForestClassifier(n_estimators=100)
+
+
+class DecisionTreeClassifier(Algorithm):
 
     def configurations(self):
         return [self.basic]
 
     def basic(self):
-        model_init = None
+        return DTC()
+
+
+class GradientBoosting(Algorithm):
+
+    def configurations(self):
+        return [self.basic, self.scaled]
+
+    def basic(self):
         return GBC(loss='deviance',
-            learning_rate=0.3,
-            n_estimators=100,
-            subsample=1.0,
-            criterion='friedman_mse',
-            min_samples_split=2, min_samples_leaf=1,
-            min_weight_fraction_leaf=0., max_depth=3,
-            min_impurity_decrease=0., min_impurity_split=None,
-            init=None, random_state=None, max_features=None,
-            verbose=0, max_leaf_nodes=None, warm_start=False, presort='auto', validation_fraction=0.1, n_iter_no_change=None, tol=1e-4)
+            learning_rate=0.3, n_estimators=50)
+
+    def scaled(self):
+        return make_pipeline(
+            StandardScaler(),
+            VarianceThreshold(threshold=.35 * (1 - .35)),
+            GBC(loss='deviance',
+            learning_rate=0.3, n_estimators=50, max_features=0.9))
 
 
 class Mpl(Algorithm):

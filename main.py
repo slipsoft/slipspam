@@ -1,6 +1,8 @@
-from src.algorithms import NaiveBayes, Svm, Knn, GradientBoosting, Mpl, RFC
+from src.algorithms import NaiveBayes, Svm, Knn, GradientBoosting, Mpl, RFC, DecisionTreeClassifier
 from src.dataset import Dataset
 import matplotlib.pyplot as plt
+import seaborn as sn
+import pandas as pd
 import numpy as np
 from collections import defaultdict
 import sys
@@ -11,7 +13,8 @@ algos = [
     (Knn, 'KNN'),
     (GradientBoosting, 'Gradient Boosting'),
     (Mpl, 'MLP'),
-    (RFC, 'RFC'),
+    (DecisionTreeClassifier, "DecisionTreeClassifier"),
+    (RFC, 'RFC')
 ]
 
 repetition = None
@@ -31,6 +34,7 @@ results = {
     'accuracy': defaultdict(lambda: []),
     'fit': defaultdict(lambda: []),
     'predict': defaultdict(lambda: []),
+    'confusion': defaultdict(lambda: []),
 }
 for i in range(repetition):
     function = 0
@@ -42,21 +46,26 @@ for i in range(repetition):
             accuracy = result['accuracy'] * 100
             fit = result['fit_duration']
             predict = result['predict_duration']
-            print('%s:\n\taccuracy: %9.6f %%\n\tfit:      %9.6f s\n\tpredict:  %9.6f s' % (
+            confusion = result['confusion']
+            print('%s:\n\taccuracy: %9.6f %%\n\tfit:      %9.6f s\n\tpredict:  %9.6f s\n\tconfusion: \n%s' % (
                 label,
                 accuracy,
                 fit,
-                predict))
+                predict,
+                confusion))
             results['label'][function] = label
             results['accuracy'][function].append(accuracy)
             results['fit'][function].append(fit)
             results['predict'][function].append(predict)
+            results['confusion'][function].append(confusion)
             function += 1
 
 
-labels = results['label'].values()
+labels = list(results['label'].values())
 fitMeans = np.mean(list(results['fit'].values()), axis=1)
 predictMeans = np.mean(list(results['predict'].values()), axis=1)
+confusionMeans = [np.mean(m, axis=0) for m in list(results['confusion'].values())]
+conf_labl = ['spam', 'non-spam']
 n_groups = len(labels)
 
 # create plot
@@ -87,6 +96,11 @@ ax2.boxplot(list(results['accuracy'].values()))
 plt.title('Algorithm comparision (%d executions)' % repetition)
 ax1.set_xticklabels(labels)  # set ticks and labels on ax1 (otherwise it does not work)
 ax1.tick_params(axis='x', which='major', labelsize=7)  # reduce size of x labels
-
 plt.tight_layout()
+
+for idx, m in enumerate(confusionMeans):
+    plt.figure()
+    plt.title(labels[idx])
+    sn.heatmap(pd.DataFrame(m, conf_labl, conf_labl), annot=True)
+
 plt.show()
