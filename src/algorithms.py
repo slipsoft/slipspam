@@ -9,6 +9,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.metrics import accuracy_score
 from sklearn.ensemble import GradientBoostingClassifier as GBC
 from time import time
+from sklearn.ensemble import RandomForestClassifier
 
 
 class Algorithm(ABC):
@@ -71,6 +72,7 @@ class Svm(Algorithm):
         return [self.basic]
 
     def basic(self):
+
         return svm.SVC(gamma='auto')
 
 
@@ -110,3 +112,11 @@ class Mpl(Algorithm):
         return make_pipeline(
             StandardScaler(),
             clf)
+
+
+class RandForClas(Algorithm):
+    def configurations(self):
+        return [self.basic]
+
+    def basic(self):
+        return RandomForestClassifier(self, )
