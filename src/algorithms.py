@@ -6,7 +6,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn import svm
 from sklearn.neural_network import MLPClassifier
 from sklearn.pipeline import make_pipeline
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.ensemble import GradientBoostingClassifier as GBC
 from sklearn.neighbors import KNeighborsClassifier
 from time import time
@@ -39,10 +39,11 @@ class Algorithm(ABC):
             predict_end = time()
             results.append({
                 'function': func.__name__,
-                'accuracy': accuracy_score(predicted, self.set.test_labl),
+                'accuracy': accuracy_score(self.set.test_labl, predicted),
                 'fit_duration': fit_end - start,
                 'predict_duration': predict_end - fit_end,
                 'duration': predict_end - start,
+                'confusion': confusion_matrix(self.set.test_labl, predicted),
             })
         return results
 

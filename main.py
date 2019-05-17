@@ -31,6 +31,7 @@ results = {
     'accuracy': defaultdict(lambda: []),
     'fit': defaultdict(lambda: []),
     'predict': defaultdict(lambda: []),
+    'confusion': defaultdict(lambda: []),
 }
 for i in range(repetition):
     function = 0
@@ -42,15 +43,18 @@ for i in range(repetition):
             accuracy = result['accuracy'] * 100
             fit = result['fit_duration']
             predict = result['predict_duration']
-            print('%s:\n\taccuracy: %9.6f %%\n\tfit:      %9.6f s\n\tpredict:  %9.6f s' % (
+            confusion = result['confusion']
+            print('%s:\n\taccuracy: %9.6f %%\n\tfit:      %9.6f s\n\tpredict:  %9.6f s\n\tconfusion: \n%s' % (
                 label,
                 accuracy,
                 fit,
-                predict))
+                predict,
+                confusion))
             results['label'][function] = label
             results['accuracy'][function].append(accuracy)
             results['fit'][function].append(fit)
             results['predict'][function].append(predict)
+            results['confusion'][function].append(confusion)
             function += 1
 
 
