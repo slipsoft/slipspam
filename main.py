@@ -100,7 +100,10 @@ plt.tight_layout()
 
 for idx, m in enumerate(confusionMeans):
     plt.figure()
-    plt.title(labels[idx])
+    m = m / m.astype(np.float).sum(axis=1) * 100  # normalize
     sn.heatmap(pd.DataFrame(m, conf_labl, conf_labl), annot=True)
+    plt.title('%s (%%)' % (labels[idx]))
+    plt.xlabel('true')
+    plt.ylabel('predicted')
 
 plt.show()
