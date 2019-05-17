@@ -8,6 +8,7 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import accuracy_score
 from sklearn.ensemble import GradientBoostingClassifier as GBC
+from sklearn.neighbors import KNeighborsClassifier
 from time import time
 
 
@@ -75,7 +76,11 @@ class Svm(Algorithm):
 
 
 class Knn(Algorithm):
-    pass
+    def configurations(self):
+        return [self.basic]
+
+    def basic(self):
+        return KNeighborsClassifier(n_neighbors=5)
 
 
 class GradientBoosting(Algorithm):
