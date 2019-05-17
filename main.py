@@ -1,4 +1,4 @@
-from src.algorithms import NaiveBayes, Svm, Knn, GradientBoosting, Mpl, RFC, LR
+from src.algorithms import NaiveBayes, Svm, Knn, GradientBoosting, Mpl, RFC, DecisionTreeClassifier
 from src.dataset import Dataset
 import matplotlib.pyplot as plt
 import numpy as np
@@ -9,10 +9,10 @@ algos = [
     (NaiveBayes, 'Naive Bayes'),
     (Svm, 'SVM'),
     (Knn, 'KNN'),
-    (LR, 'Logistic Regression'),
     (GradientBoosting, 'Gradient Boosting'),
     (Mpl, 'MLP'),
-    (RFC, 'RFC'),
+    (DecisionTreeClassifier, "DecisionTreeClassifier"),
+    (RFC, 'RFC')
 ]
 
 repetition = None

@@ -3,12 +3,14 @@ from .dataset import Dataset
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn import svm
 from sklearn.neural_network import MLPClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import accuracy_score
 from sklearn.ensemble import GradientBoostingClassifier as GBC
-from sklearn.linear_model import LogisticRegression as LR
+from sklearn.tree import DecisionTreeClassifier as DTC
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_selection import VarianceThreshold
 from time import time
 
@@ -75,15 +77,27 @@ class Svm(Algorithm):
     def basic(self):
         return svm.SVC(gamma='auto')
 
-class LogisticRegression(Algorithm):
-    def configurations():
-        return[self.basic]
-    def basic(self):
-        return LR()
-
 class Knn(Algorithm):
-    pass
+    def configurations(self):
+        return [self.basic]
 
+    def basic(self):
+        return KNeighborsClassifier(n_neighbors=5)
+
+class RFC(Algorithm):
+    def configurations(self):
+        return [self.basic]
+
+    def basic(self):
+        return RandomForestClassifier(n_estimators=100)
+
+class DecisionTreeClassifier(Algorithm):
+
+    def configurations(self):
+        return [self.basic]
+
+    def basic(self):
+        return DTC()
 
 class GradientBoosting(Algorithm):
 
