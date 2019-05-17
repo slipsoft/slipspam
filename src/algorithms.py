@@ -119,9 +119,9 @@ class Mpl(Algorithm):
             clf)
 
 
-class RandForClas(Algorithm):
+class RFC(Algorithm):
     def configurations(self):
         return [self.basic]
 
     def basic(self):
-        return RandomForestClassifier(self, )
+        return RandomForestClassifier(n_estimators=100)

@@ -1,4 +1,4 @@
-from src.algorithms import NaiveBayes, Svm, Knn, GradientBoosting, Mpl
+from src.algorithms import NaiveBayes, Svm, Knn, GradientBoosting, Mpl, RFC
 from src.dataset import Dataset
 import matplotlib.pyplot as plt
 import numpy as np
@@ -11,6 +11,7 @@ algos = [
     (Knn, 'KNN'),
     (GradientBoosting, 'Gradient Boosting'),
     (Mpl, 'MLP'),
+    (RFC, 'RFC'),
 ]
 
 repetition = None
