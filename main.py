@@ -17,7 +17,7 @@ repetition = None
 test_size = 0.2
 maxExec = 1000
 
-if len(sys.argv[1]) >= 2:
+if len(sys.argv) >= 2:
     try:
         repetition = int(sys.argv[1])
     except ValueError:
