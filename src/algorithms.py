@@ -8,9 +8,9 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import accuracy_score
 from sklearn.ensemble import GradientBoostingClassifier as GBC
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.linear_model import LogisticRegression as LR
+from sklearn.feature_selection import VarianceThreshold
 from time import time
-from sklearn.ensemble import RandomForestClassifier
 
 
 class Algorithm(ABC):
@@ -73,35 +73,33 @@ class Svm(Algorithm):
         return [self.basic]
 
     def basic(self):
-
         return svm.SVC(gamma='auto')
 
+class LogisticRegression(Algorithm):
+    def configurations():
+        return[self.basic]
+    def basic(self):
+        return LR()
 
 class Knn(Algorithm):
-    def configurations(self):
-        return [self.basic]
-
-    def basic(self):
-        return KNeighborsClassifier(n_neighbors=5)
+    pass
 
 
 class GradientBoosting(Algorithm):
 
     def configurations(self):
-        return [self.basic]
+        return [self.basic, self.scaled]
 
     def basic(self):
-        model_init = None
         return GBC(loss='deviance',
-            learning_rate=0.3,
-            n_estimators=100,
-            subsample=1.0,
-            criterion='friedman_mse',
-            min_samples_split=2, min_samples_leaf=1,
-            min_weight_fraction_leaf=0., max_depth=3,
-            min_impurity_decrease=0., min_impurity_split=None,
-            init=None, random_state=None, max_features=None,
-            verbose=0, max_leaf_nodes=None, warm_start=False, presort='auto', validation_fraction=0.1, n_iter_no_change=None, tol=1e-4)
+            learning_rate=0.3, n_estimators=50)
+
+    def scaled(self):
+        return make_pipeline(
+            StandardScaler(),
+            VarianceThreshold(threshold=.35 * (1 - .35)),
+            GBC(loss='deviance',
+            learning_rate=0.3, n_estimators=50, max_features=0.9))
 
 
 class Mpl(Algorithm):
@@ -117,11 +115,3 @@ class Mpl(Algorithm):
         return make_pipeline(
             StandardScaler(),
             clf)
-
-
-class RFC(Algorithm):
-    def configurations(self):
-        return [self.basic]
-
-    def basic(self):
-        return RandomForestClassifier(n_estimators=100)
