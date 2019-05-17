@@ -35,8 +35,11 @@ This will install and activate a virtual python environment in the dev directory
 
 ### Running
 
-    python3 main.py [number of repetitions]
-    example: "main.py 5" for 5 successive executions 
+    python3 main.py <nb executions>
+
+exemple:
+
+    python3 main.py 5
 
 ### Deactivating
 

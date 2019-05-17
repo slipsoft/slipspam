@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from .dataset import Dataset
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
-from sklearn.naive_bayes import GaussianNB
+from sklearn.naive_bayes import BernoulliNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import svm
 from sklearn.neural_network import MLPClassifier
@@ -59,17 +59,10 @@ class Algorithm(ABC):
 class NaiveBayes(Algorithm):
 
     def configurations(self):
-        return [self.basic, self.scaled]
+        return [self.bernouilli]
 
-    def basic(self):
-        """This is an exemple of an algorithm's most basic implementation"""
-        return GaussianNB()
-
-    def scaled(self):
-        return make_pipeline(
-            StandardScaler(),
-            PCA(n_components=2),
-            GaussianNB())
+    def bernouilli(self):
+        return BernoulliNB(alpha=0.5, binarize=0.2)
 
 
 class Svm(Algorithm):
