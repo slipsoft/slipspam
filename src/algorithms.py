@@ -10,8 +10,9 @@ from sklearn.pipeline import make_pipeline
 from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.ensemble import GradientBoostingClassifier as GBC
 from sklearn.tree import DecisionTreeClassifier as DTC
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier 
 from sklearn.feature_selection import VarianceThreshold
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from time import time
 
 
@@ -95,13 +96,20 @@ class RFC(Algorithm):
         return RandomForestClassifier(n_estimators=100)
 
 
-class DecisionTreeClassifier(Algorithm):
+# class LinearDiscriminantAnalysis(Algorithm) :
+#     def configurations(self):
+#         return [self.basic]
 
-    def configurations(self):
-        return [self.basic]
+#     def basic(self):
+#         return LDA()
 
-    def basic(self):
-        return DTC()
+# class DecisionTreeClassifier(Algorithm):
+
+#     def configurations(self):
+#         return [self.basic]
+
+#     def basic(self):
+#         return DTC()
 
 
 class GradientBoosting(Algorithm):
@@ -119,7 +127,6 @@ class GradientBoosting(Algorithm):
             VarianceThreshold(threshold=.35 * (1 - .35)),
             GBC(loss='deviance',
             learning_rate=0.3, n_estimators=50, max_features=0.9))
-
 
 class Mpl(Algorithm):
     def configurations(self):
