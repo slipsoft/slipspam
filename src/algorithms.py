@@ -121,7 +121,10 @@ class Mpl(Algorithm):
 
 class RFC(Algorithm):
     def configurations(self):
-        return [self.basic]
+        return [self.basic, self.optimize]
 
     def basic(self):
-        return RandomForestClassifier(n_estimators=100)
+        return RandomForestClassifier(n_estimators=10)
+
+    def optimize(self):
+        return RandomForestClassifier(n_estimators=100, n_jobs=5)
