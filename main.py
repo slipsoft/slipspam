@@ -1,4 +1,4 @@
-from src.algorithms import NaiveBayes, Svm, Knn, GradientBoosting, Mpl, RFC
+from src.algorithms import NaiveBayes, Svm, Knn, GradientBoosting, Mpl, RFC, DecisionTreeClassifier
 from src.dataset import Dataset
 import matplotlib.pyplot as plt
 import seaborn as sn
@@ -13,7 +13,8 @@ algos = [
     (Knn, 'KNN'),
     (GradientBoosting, 'Gradient Boosting'),
     (Mpl, 'MLP'),
-    (RFC, 'RFC'),
+    (DecisionTreeClassifier, "DecisionTreeClassifier"),
+    (RFC, 'RFC')
 ]
 
 repetition = None
