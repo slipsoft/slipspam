@@ -3,16 +3,27 @@ from src.dataset import Dataset
 import matplotlib.pyplot as plt
 import numpy as np
 from collections import defaultdict
+import sys
 
 algos = [
     (NaiveBayes, 'Naive Bayes'),
     (Svm, 'SVM'),
-    # (Knn, 'KNN'),
+    (Knn, 'KNN'),
     (GradientBoosting, 'Gradient Boosting'),
     (Mpl, 'MLP'),
 ]
+
+repetition = None
 test_size = 0.2
-repetition = 1
+maxExec = 1000
+
+if len(sys.argv) >= 2:
+    try:
+        repetition = int(sys.argv[1])
+    except ValueError:
+        repetition = 5
+else:
+    repetition = 5
 
 results = {
     'label': {},
