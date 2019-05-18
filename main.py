@@ -7,6 +7,11 @@ import numpy as np
 from collections import defaultdict
 import sys
 
+
+def normalize(cm):
+    return cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+
+
 algos = [
     (NaiveBayes, 'Naive Bayes'),
     (Svm, 'SVM'),
@@ -101,8 +106,8 @@ plt.tight_layout()
 
 for idx, m in enumerate(confusionMeans):
     plt.figure()
-    m = m / m.astype(np.float).sum(axis=1) * 100  # normalize
-    sn.heatmap(pd.DataFrame(m, conf_labl, conf_labl), annot=True)
+    data = normalize(m) * 100
+    sn.heatmap(data, xticklabels=conf_labl, yticklabels=conf_labl, annot=True, fmt='.0f', vmin=0, vmax=100)
     plt.title('%s (%%)' % (labels[idx]))
     plt.xlabel('true')
     plt.ylabel('predicted')
