@@ -70,8 +70,8 @@ for i in range(repetition):
 labels = list(results['label'].values())
 fitMeans = np.mean(list(results['fit'].values()), axis=1)
 predictMeans = np.mean(list(results['predict'].values()), axis=1)
-confusionMeans = [np.mean(m, axis=0) for m in list(results['confusion'].values())]
-conf_labl = ['spam', 'non-spam']
+cmMeans = [np.mean(m, axis=0) for m in list(results['confusion'].values())]
+cmInterleaved = np.reshape(cmMeans, (-1, 2), order='F')
 n_groups = len(labels)
 
 # create plot
@@ -104,12 +104,11 @@ ax1.set_xticklabels(labels)  # set ticks and labels on ax1 (otherwise it does no
 ax1.tick_params(axis='x', which='major', labelsize=7)  # reduce size of x labels
 plt.tight_layout()
 
-for idx, m in enumerate(confusionMeans):
-    plt.figure()
-    data = normalize(m) * 100
-    sn.heatmap(data, xticklabels=conf_labl, yticklabels=conf_labl, annot=True, fmt='.0f', vmin=0, vmax=100)
-    plt.title('%s (%%)' % (labels[idx]))
-    plt.xlabel('true')
-    plt.ylabel('predicted')
+plt.figure()
+data = normalize(cmInterleaved) * 100
+sn.heatmap(data, xticklabels=['spam', 'non-spam'], yticklabels=labels * 2, annot=True, fmt='.0f', vmin=0, vmax=100)
+plt.title('Confusion Matrix (%)')
+plt.xlabel('true')
+plt.ylabel('predicted')
 
 plt.show()

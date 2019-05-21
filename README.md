@@ -3,6 +3,7 @@
 Ultimate spam detector
 
 ![algorithms benchmark chart](docs/benchmark3.png)
+![interleaved confusion matrix](docs/confusion-matrix1.png)
 
 
 ## Getting Started
