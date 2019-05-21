@@ -106,9 +106,11 @@ plt.tight_layout()
 
 plt.figure()
 data = normalize(cmInterleaved) * 100
-sn.heatmap(data, xticklabels=['spam', 'non-spam'], yticklabels=labels * 2, annot=True, fmt='.0f', vmin=0, vmax=100)
+ax3 = sn.heatmap(data, xticklabels=['spam', 'non-spam'], yticklabels=labels * 2, annot=True, fmt='.0f', vmin=0, vmax=100)
+ax3.tick_params(axis='y', which='major', labelsize=7)  # reduce size of y labels
 plt.title('Confusion Matrix (%)')
 plt.xlabel('true')
 plt.ylabel('predicted')
+plt.subplots_adjust(left=0.21, right=1, top=0.92)
 
 plt.show()
