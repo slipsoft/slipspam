@@ -66,13 +66,13 @@ for i in range(repetition):
             results['confusion'][function].append(confusion)
             function += 1
 
-
-labels = list(results['label'].values())
+labelTrans = ['non-spamm', 'spam']
+algoNames = list(results['label'].values())
 fitMeans = np.mean(list(results['fit'].values()), axis=1)
 predictMeans = np.mean(list(results['predict'].values()), axis=1)
 cmMeans = [np.mean(m, axis=0) for m in list(results['confusion'].values())]
 cmInterleaved = np.reshape(cmMeans, (-1, 2), order='F')
-n_groups = len(labels)
+n_groups = len(algoNames)
 
 # create plot
 fig, ax1 = plt.subplots()
@@ -100,13 +100,13 @@ ax2.set_ylabel('Accuracy (%)')
 ax2.boxplot(list(results['accuracy'].values()))
 
 plt.title('Algorithm comparision (%d executions)' % repetition)
-ax1.set_xticklabels(labels)  # set ticks and labels on ax1 (otherwise it does not work)
+ax1.set_xticklabels(algoNames)  # set ticks and labels on ax1 (otherwise it does not work)
 ax1.tick_params(axis='x', which='major', labelsize=7)  # reduce size of x labels
 plt.tight_layout()
 
 plt.figure()
 data = normalize(cmInterleaved) * 100
-ax3 = sn.heatmap(data, xticklabels=['spam', 'non-spam'], yticklabels=labels * 2, annot=True, fmt='.0f', vmin=0, vmax=100)
+ax3 = sn.heatmap(data, xticklabels=labelTrans, yticklabels=algoNames * 2, annot=True, fmt='.0f', vmin=0, vmax=100)
 ax3.tick_params(axis='y', which='major', labelsize=7)  # reduce size of y labels
 plt.title('Confusion Matrix (%)')
 plt.xlabel('true')
