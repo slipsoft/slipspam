@@ -1,15 +1,14 @@
+#!/usr/bin/env python3
+
 from src.algorithms import NaiveBayes, Svm, Knn, GradientBoosting, Mpl, RFC
 from src.dataset import Dataset
+from src.utils import normalize
 import matplotlib.pyplot as plt
 import seaborn as sn
 import pandas as pd
 import numpy as np
 from collections import defaultdict
 import sys
-
-
-def normalize(cm):
-    return cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
 
 
 algos = [
@@ -66,7 +65,7 @@ for i in range(repetition):
             results['confusion'][function].append(confusion)
             function += 1
 
-labelTrans = ['non-spamm', 'spam']
+labelTrans = ['non-spam', 'spam']
 algoNames = list(results['label'].values())
 fitMeans = np.mean(list(results['fit'].values()), axis=1)
 predictMeans = np.mean(list(results['predict'].values()), axis=1)
@@ -109,8 +108,8 @@ data = normalize(cmInterleaved) * 100
 ax3 = sn.heatmap(data, xticklabels=labelTrans, yticklabels=algoNames * 2, annot=True, fmt='.0f', vmin=0, vmax=100)
 ax3.tick_params(axis='y', which='major', labelsize=7)  # reduce size of y labels
 plt.title('Confusion Matrix (%)')
-plt.xlabel('true')
-plt.ylabel('predicted')
+plt.xlabel('True')
+plt.ylabel('Predicted')
 plt.subplots_adjust(left=0.21, right=1, top=0.92)
 
 plt.show()

@@ -2,7 +2,7 @@
 
 Ultimate spam detector
 
-![algorithms benchmark chart](docs/benchmark3.png)
+![algorithms benchmark chart](docs/benchmark4.png)
 ![interleaved confusion matrix](docs/confusion-matrix1.png)
 
 

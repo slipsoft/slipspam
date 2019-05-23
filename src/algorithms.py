@@ -67,7 +67,7 @@ class NaiveBayes(Algorithm):
 
 class Svm(Algorithm):
     def configurations(self):
-        return [self.basic]
+        return []
 
     def basic(self):
         return svm.SVC(gamma='auto')
@@ -75,7 +75,7 @@ class Svm(Algorithm):
 
 class Knn(Algorithm):
     def configurations(self):
-        return [self.basic, self.scaled]
+        return [self.scaled]
 
     def basic(self):
         return KNeighborsClassifier(n_neighbors=5)
