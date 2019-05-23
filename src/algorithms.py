@@ -10,7 +10,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.ensemble import GradientBoostingClassifier as GBC
 from sklearn.tree import DecisionTreeClassifier as DTC
-from sklearn.ensemble import RandomForestClassifier 
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_selection import VarianceThreshold
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from time import time
@@ -75,10 +75,16 @@ class Svm(Algorithm):
 
 class Knn(Algorithm):
     def configurations(self):
-        return [self.basic]
+        return [self.basic, self.scaled]
 
     def basic(self):
         return KNeighborsClassifier(n_neighbors=5)
+
+    def scaled(self):
+        return make_pipeline(
+            StandardScaler(),
+            KNeighborsClassifier(n_neighbors=5)
+        )
 
 
 class RFC(Algorithm):
@@ -120,6 +126,7 @@ class GradientBoosting(Algorithm):
             VarianceThreshold(threshold=.35 * (1 - .35)),
             GBC(loss='deviance',
             learning_rate=0.3, n_estimators=50, max_features=0.9))
+
 
 class Mpl(Algorithm):
     def configurations(self):
