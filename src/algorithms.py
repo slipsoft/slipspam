@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from .dataset import Dataset
 from sklearn.preprocessing import StandardScaler
+from sklearn.compose import ColumnTransformer
 from sklearn.decomposition import PCA
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.neighbors import KNeighborsClassifier
@@ -27,6 +28,9 @@ class Algorithm(ABC):
     def __init__(self, dataset: Dataset):
         super().__init__()
         self.set = dataset
+
+    def properScale(self):
+        set1 = StandardScaler()
 
     def test(self):
         """Run the algorithm and return the accuracy of its predictions"""
@@ -59,10 +63,22 @@ class Algorithm(ABC):
 class NaiveBayes(Algorithm):
 
     def configurations(self):
-        return [self.bernouilli]
+        return [self.bernouilli, self.separateScale]
 
     def bernouilli(self):
         return BernoulliNB(alpha=0.5, binarize=0.2)
+
+    def separateScale(self):
+        ct = ColumnTransformer([
+            ("wordFreq", StandardScaler(), slice(0, 48)),
+            ("charFreq", StandardScaler(), slice(48, 54)),
+            ("continuousCapital", StandardScaler(), slice(54, 56)),
+            ("longestCapital", StandardScaler(), [56])
+        ])
+        return make_pipeline(
+            ct,
+            BernoulliNB(alpha=0.5, binarize=0.2)
+        )
 
 
 class Svm(Algorithm):
@@ -75,15 +91,46 @@ class Svm(Algorithm):
 
 class Knn(Algorithm):
     def configurations(self):
-        return [self.basic, self.scaled]
+        return [self.separateScaleSelected]
 
     def basic(self):
         return KNeighborsClassifier(n_neighbors=5)
 
-    def scaled(self):
+    def scaledUniform(self):
         return make_pipeline(
             StandardScaler(),
-            KNeighborsClassifier(n_neighbors=5)
+            KNeighborsClassifier(n_neighbors=5, weights="uniform")
+        )
+
+    def scaledDistance(self):
+        return make_pipeline(
+            StandardScaler(),
+            KNeighborsClassifier(n_neighbors=5, weights="distance")
+        )
+
+    def separateScale(self):
+        ct = ColumnTransformer([
+            ("wordFreq", StandardScaler(), slice(0, 48)),
+            ("charFreq", StandardScaler(), slice(48, 54)),
+            ("continuousCapital", StandardScaler(), slice(54, 56)),
+            ("longestCapital", StandardScaler(), [56])
+        ])
+        return make_pipeline(
+            ct,
+            KNeighborsClassifier(n_neighbors=5, weights="distance")
+        )
+
+    def separateScaleSelected(self):
+        ct = ColumnTransformer([
+            ("wordFreq", StandardScaler(), slice(0, 48)),
+            ("charFreq", StandardScaler(), slice(48, 54)),
+            ("continuousCapital", StandardScaler(), slice(54, 56)),
+            ("longestCapital", StandardScaler(), [56])
+        ])
+        return make_pipeline(
+            ct,
+            PCA(),
+            KNeighborsClassifier(n_neighbors=5, weights="distance")
         )
 
 

@@ -13,10 +13,10 @@ def normalize(cm):
 
 
 algos = [
-    (NaiveBayes, 'Naive Bayes'),
+    (NaiveBayes, 'NB'),
     (Svm, 'SVM'),
     (Knn, 'KNN'),
-    (GradientBoosting, 'Gradient Boosting'),
+    (GradientBoosting, 'Gb'),
     (Mpl, 'MLP'),
     # (DecisionTreeClassifier, "DecisionTreeClassifier"),
     # (LinearDiscriminantAnalysis, "LinearDiscriminant Analysis"),
