@@ -29,9 +29,6 @@ class Algorithm(ABC):
         super().__init__()
         self.set = dataset
 
-    def properScale(self):
-        set1 = StandardScaler()
-
     def test(self):
         """Run the algorithm and return the accuracy of its predictions"""
         results = []
@@ -63,7 +60,7 @@ class Algorithm(ABC):
 class NaiveBayes(Algorithm):
 
     def configurations(self):
-        return [self.bernouilli, self.separateScale]
+        return [self.bernouilli]
 
     def bernouilli(self):
         return BernoulliNB(alpha=0.5, binarize=0.2)
@@ -83,7 +80,7 @@ class NaiveBayes(Algorithm):
 
 class Svm(Algorithm):
     def configurations(self):
-        return [self.basic]
+        return []
 
     def basic(self):
         return svm.SVC(gamma='auto')
