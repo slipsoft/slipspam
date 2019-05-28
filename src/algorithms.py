@@ -39,7 +39,7 @@ class Algorithm(ABC):
             model.fit(self.set.train_feat, self.set.train_labl)
             fit_end = time()
             # Predict Output
-            predicted = model.predict(self.set.test_feat)
+            predicted = self.predict_classic(model)
             predict_end = time()
             results.append({
                 'function': func.__name__,
@@ -50,6 +50,14 @@ class Algorithm(ABC):
                 'confusion': confusion_matrix(self.set.test_labl, predicted),
             })
         return results
+
+    def predict_classic(self, model):
+        """Return the predictions of a model over the test features"""
+        return model.predict(self.set.test_feat)
+
+    def predict_weight(self, model):
+        """Return the predictions of a model over the test features but giving more weight to the non-spam label"""
+        return [1 if p[1] > 0.94 else 0 for p in model.predict_proba(self.set.test_feat)]
 
     @abstractmethod
     def configurations(self):
