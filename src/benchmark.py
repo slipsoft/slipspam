@@ -43,8 +43,8 @@ def run_bench(algos, repetition, test_size):
     algoNames = list(results['label'].values())
     fitMeans = np.mean(list(results['fit'].values()), axis=1)
     predictMeans = np.mean(list(results['predict'].values()), axis=1)
-    cmMeans = [np.mean(m, axis=0) for m in list(results['confusion'].values())]
-    cmInterleaved = np.reshape(cmMeans, (-1, 2), order='F')
+    cmMeans = [normalize(np.mean(m, axis=0)) for m in list(results['confusion'].values())]
+    cmInterleaved = np.reshape(cmMeans, (-1, 2)).reshape((2, -1), order='F')
     n_groups = len(algoNames)
 
     # create plot
@@ -78,12 +78,12 @@ def run_bench(algos, repetition, test_size):
     plt.tight_layout()
 
     plt.figure()
-    data = normalize(cmInterleaved) * 100
-    ax3 = sn.heatmap(data, xticklabels=labelTrans, yticklabels=algoNames * 2, annot=True, fmt='.0f', vmin=0, vmax=100)
-    ax3.tick_params(axis='y', which='major', labelsize=7)  # reduce size of y labels
+    data = cmInterleaved * 100
+    ax3 = sn.heatmap(data, yticklabels=labelTrans, xticklabels=algoNames * 2, annot=True, fmt='.0f', vmin=0, vmax=100)
+    ax3.tick_params(axis='x', which='major', labelsize=7)  # reduce size of y labels
     plt.title('Confusion Matrix (%)')
-    plt.xlabel('True')
-    plt.ylabel('Predicted')
+    plt.ylabel('True')
+    plt.xlabel('Predicted')
     plt.subplots_adjust(left=0.21, right=1, top=0.92)
 
     plt.show()
