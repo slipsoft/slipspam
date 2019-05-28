@@ -21,6 +21,7 @@ from src.algorithms import NaiveBayes, Svm, Knn, GradientBoosting, Mpl, Rfc
 from src.dataset import Dataset
 from src.benchmark import run_bench
 from src.utils import text2features, trans_label
+from pandas import read_csv
 from docopt import docopt
 
 args = docopt(__doc__, version='SlipSpam 1.0-beta.1')
@@ -51,7 +52,7 @@ elif args['predict']:
         text = f.read()
         features = [text2features(text)]
     if args['--in-feat']:
-        raise NotImplementedError('This option have not been implemented yet...')
+        features = read_csv(args['--in-feat']).to_numpy()[:, :57]
     dataset = Dataset(test_size=test_size)
     if verbose:
         print(features)

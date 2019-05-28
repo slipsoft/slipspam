@@ -53,13 +53,13 @@ class Algorithm(ABC):
 
     def predict_classic(self, model, features=None):
         """Return the predictions of a model over the test features"""
-        if features == None:
+        if features is None:
             features = self.set.test_feat
         return model.predict(features)
 
     def predict_weight(self, model, features=None):
         """Return the predictions of a model over the test features but giving more weight to the non-spam label"""
-        if features == None:
+        if features is None:
             features = self.set.test_feat
         return [1 if p[1] > 0.94 else 0 for p in model.predict_proba(features)]
 
