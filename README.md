@@ -36,11 +36,15 @@ This will install and activate a virtual python environment in the dev directory
 
 ### Running
 
-    python3 main.py <nb executions>
+#### Benchmarks
+
+    bin/slipspam bench [-e <nb executions>]
 
 exemple:
 
-    python3 main.py 5
+    bin/slipspam bench -e 5
+
+####
 
 ### Deactivating
 
@@ -52,7 +56,11 @@ _not deployable yet..._
 
 ## Documentation
 
-_no docs yet_
+### CLI
+
+You can get the CLI documentation by running the following command:
+
+    bin/slipspam --help
 
 ## Built With
 

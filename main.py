@@ -1,9 +1,24 @@
 #!/usr/bin/env python3
+"""SlipSapm.
 
+Usage:
+  slipspam bench [options]
+  slipspam predict [options] <file>
+  slipspam -h | --help
+  slipspam --version
+
+Options:
+  -h --help                      Show this screen.
+  --version                      Show version.
+  -e <nb>, --executions=<nb>     Number of executions [default: 5].
+  -t <size>, --test-size=<size>  Proportion of the dataset to use for the tests [default: 0.2].
+"""
 from src.algorithms import NaiveBayes, Svm, Knn, GradientBoosting, Mpl, RFC
 from src.benchmark import run_bench
-import sys
+from docopt import docopt
 
+args = docopt(__doc__, version='SlipSpam 1.0-beta.1')
+# print(args)
 
 algos = [
     (NaiveBayes, 'NB'),
@@ -15,17 +30,8 @@ algos = [
     # (LinearDiscriminantAnalysis, "LinearDiscriminant Analysis"),
     (RFC, 'RFC')
 ]
+repetition = int(args['--executions'])
+test_size = float(args['--test-size'])
 
-repetition = None
-test_size = 0.2
-maxExec = 1000
-
-if len(sys.argv) >= 2:
-    try:
-        repetition = int(sys.argv[1])
-    except ValueError:
-        repetition = 5
-else:
-    repetition = 5
-
-run_bench(algos, repetition, test_size)
+if args['bench']:
+    run_bench(algos, repetition, test_size)
