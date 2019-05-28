@@ -51,13 +51,22 @@ class Algorithm(ABC):
             })
         return results
 
-    def predict_classic(self, model):
+    def predict_classic(self, model, features=None):
         """Return the predictions of a model over the test features"""
-        return model.predict(self.set.test_feat)
+        if features == None:
+            features = self.set.test_feat
+        return model.predict(features)
 
-    def predict_weight(self, model):
+    def predict_weight(self, model, features=None):
         """Return the predictions of a model over the test features but giving more weight to the non-spam label"""
-        return [1 if p[1] > 0.94 else 0 for p in model.predict_proba(self.set.test_feat)]
+        if features == None:
+            features = self.set.test_feat
+        return [1 if p[1] > 0.94 else 0 for p in model.predict_proba(features)]
+
+    def predict(self, configuration, features):
+        model = getattr(self, configuration)()
+        model.fit(self.set.train_feat, self.set.train_labl)
+        return self.predict_classic(model, features)
 
     @abstractmethod
     def configurations(self):
@@ -187,7 +196,7 @@ class Mpl(Algorithm):
             clf)
 
 
-class RFC(Algorithm):
+class Rfc(Algorithm):
     def configurations(self):
         return [self.basic, self.optimize]
 
