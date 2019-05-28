@@ -131,14 +131,6 @@ class Knn(Algorithm):
         )
 
 
-class RFC(Algorithm):
-    def configurations(self):
-        return [self.basic]
-
-    def basic(self):
-        return RandomForestClassifier(n_estimators=100)
-
-
 # class LinearDiscriminantAnalysis(Algorithm) :
 #     def configurations(self):
 #         return [self.basic]
