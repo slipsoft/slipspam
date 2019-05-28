@@ -2,18 +2,20 @@
 """SlipSapm.
 
 Usage:
-  slipspam bench [options]
-  slipspam predict [options] (<email-text> | --in-text=<file> | --in-feat=<file>)
+  slipspam bench [-v] [--executions=<nb>] [--test-size=<size>]
+  slipspam predict [-v] [-t] (<email-text> | --in-text=<file> | --in-feat=<file>)
   slipspam -h | --help
   slipspam --version
 
 Options:
-  -h --help                      Show this screen.
-  --version                      Show version.
-  -e <nb>, --executions=<nb>     Number of executions [default: 5].
-  -t <size>, --test-size=<size>  Proportion of the dataset to use for the tests [default: 0.2].
-  --in-text=<file>               Path to a file containing the text of a mail to classify.
-  --in-feat=<file>               Path to a file containing a csv of features compliant with spambase.
+  -h --help                    Show this screen.
+  --version                    Show version.
+  -e <nb>, --executions=<nb>   Number of executions [default: 5].
+  --test-size=<size>           Proportion of the dataset to use for the tests [default: 0.8].
+  -v                           Verbose
+  -t                           Translated for human readability
+  --in-text=<file>             Path to a file containing the text of a mail to classify.
+  --in-feat=<file>             Path to a file containing a csv of features compliant with spambase.
 """
 from src.algorithms import NaiveBayes, Svm, Knn, GradientBoosting, Mpl, Rfc
 from src.dataset import Dataset
@@ -36,10 +38,25 @@ algos = [
 ]
 repetition = int(args['--executions'])
 test_size = float(args['--test-size'])
+verbose = args['-v']
 
 if args['bench']:
     run_bench(algos, repetition, test_size)
 elif args['predict']:
+    if args['<email-text>']:
+        text = args['<email-text>']
+        features = [text2features(text)]
+    if args['--in-text']:
+        f = open(args['--in-text'], "r")
+        text = f.read()
+        features = [text2features(text)]
+    if args['--in-feat']:
+        raise NotImplementedError('This option have not been implemented yet...')
     dataset = Dataset(test_size=test_size)
-    features = [text2features(args['<email-text>'])]
-    print([trans_label(i) for i in Rfc(dataset).predict('optimize', features)])
+    if verbose:
+        print(features)
+    results = Rfc(dataset).predict('optimize', features)
+    if args['-t']:
+        print([trans_label(i) for i in results])
+    else:
+        print(results)
