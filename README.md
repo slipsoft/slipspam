@@ -34,6 +34,7 @@ bin/slipspam predict [options] (<email-text> | --in-text=<file> | --in-feat=<fil
 ```
 
 This command enables you to predict if a mail is spam or not. It can also run the algorithm on a full dataset via the `--in-feat` option.
+
 ![predict command](./docs/predict-command.png)
 
 ### `parse` command
@@ -43,6 +44,7 @@ bin/slipspam parse --in=<file> --out=<file>
 ```
 
 This command convert a dataset of text mails into a dataset of features corresponding to the ones our algorithm is trained on.
+
 ![parse command](./docs/parse-command.png)
 
 ## Getting Started
