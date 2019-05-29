@@ -2,8 +2,8 @@
 """SlipSapm.
 
 Usage:
-  slipspam bench [-v] [--executions=<nb>] [--test-size=<size>]
-  slipspam predict [-v] [-t] (<email-text> | --in-text=<file> | --in-feat=<file>)
+  slipspam bench [-v] [--executions=<nb>] [--test-size=<size>] [--dataset=<file>]
+  slipspam predict [-v] [-t] [--dataset=<file>] (<email-text> | --in-text=<file> | --in-feat=<file>)
   slipspam parse --in=<file> --out=<file>
   slipspam -h | --help
   slipspam --version
@@ -11,9 +11,10 @@ Usage:
 Options:
   -h --help                    Show this screen.
   --version                    Show version.
+  -v                           Verbose
   -e <nb>, --executions=<nb>   Number of executions [default: 5].
   --test-size=<size>           Proportion of the dataset to use for the tests [default: 0.8].
-  -v                           Verbose
+  --dataset=<file>             Path to a dataset (from data/) [default: spambase.csv]
   -t                           Translated for human readability
   --in-text=<file>             Path to a file containing the text of a mail to classify.
   --in-feat=<file>             Path to a file containing a csv of features compliant with spambase.
@@ -44,10 +45,11 @@ algos = [
 ]
 repetition = int(args['--executions'])
 test_size = float(args['--test-size'])
+data_file = args['--dataset']
 verbose = args['-v']
 
 if args['bench']:
-    run_bench(algos, repetition, test_size)
+    run_bench(algos, repetition, test_size, data_file)
 elif args['predict']:
     if args['<email-text>']:
         text = args['<email-text>']
@@ -59,7 +61,7 @@ elif args['predict']:
         features = [text2features(text)]
     if args['--in-feat']:
         features = pd.read_csv(args['--in-feat']).to_numpy()[:, :57]
-    dataset = Dataset(test_size=test_size)
+    dataset = Dataset(test_size=test_size, file=data_file)
     if verbose:
         print(features)
     results = Rfc(dataset).predict('optimize', features)

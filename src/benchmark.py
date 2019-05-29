@@ -7,7 +7,7 @@ import numpy as np
 from collections import defaultdict
 
 
-def run_bench(algos, repetition, test_size):
+def run_bench(algos, repetition, test_size, file):
     results = {
         'label': {},
         'accuracy': defaultdict(lambda: []),
@@ -17,7 +17,7 @@ def run_bench(algos, repetition, test_size):
     }
     for i in range(repetition):
         function = 0
-        dataset = Dataset(test_size=test_size)
+        dataset = Dataset(test_size=test_size, file=file)
         for algo, name in algos:
             instance = algo(dataset)
             for result in instance.test():
