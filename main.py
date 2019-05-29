@@ -59,14 +59,15 @@ if args['bench']:
 elif args['predict']:
     if args['<email-text>']:
         text = args['<email-text>']
-        features = [text2features(text)]
+        features = [np.delete(text2features(text), drop_cols)]
     if args['--in-text']:
         f = open(args['--in-text'], "r")
         text = f.read()
         f.close()
-        features = [text2features(text)]
+        features = [np.delete(text2features(text), drop_cols)]
     if args['--in-feat']:
-        features = pd.read_csv(args['--in-feat']).to_numpy()[:, :57]
+        data_frame = pd.read_csv(args['--in-feat'], header=None).drop(columns=drop_cols)
+        features = data_frame.iloc[:, :-1].values
     dataset = Dataset(test_size=test_size, file=data_file, drop_cols=drop_cols)
     if verbose:
         print(features)
