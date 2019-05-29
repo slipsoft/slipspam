@@ -2,7 +2,7 @@ from numpy import newaxis
 from nltk import download
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
-from numpy import average, max, sum
+import numpy as np
 
 NLTK_DATA_DIR = 'dev/nltk_data'
 
@@ -73,8 +73,8 @@ COUNT_CHARS = [
 
 
 def text2features(text: str):
-    download('punkt', NLTK_DATA_DIR)
-    # download('wordnet', NLTK_DATA_DIR)
+    download('punkt', NLTK_DATA_DIR, quiet=True)
+    # download('wordnet', NLTK_DATA_DIR, quiet=True)
     # lemmatizer=WordNetLemmatizer()
 
     tokens = word_tokenize(text)
@@ -112,16 +112,22 @@ def text2features(text: str):
         features[idx] = nb / total_nb_words * 100
     for idx, nb in enumerate(count_chars):
         features[idx + 48] = nb / total_nb_chars * 100
-    features[54] = average(capital_sequences)
-    features[55] = max(capital_sequences)
-    features[56] = sum(capital_sequences)
+    features[54] = np.average(capital_sequences)
+    features[55] = np.max(capital_sequences)
+    features[56] = np.sum(capital_sequences)
     return features
+
+
+vtext2features = np.vectorize(text2features, otypes=[np.ndarray])
 
 
 def trans_label(label):
     if label == 0:
         return 'Non-spam'
     elif label == 1:
-        return 'SPAM !'
+        return '! SPAM !'
     else:
-        return 'Unknown ??'
+        return 'Unknown?'
+
+
+vtrans_label = np.vectorize(trans_label)

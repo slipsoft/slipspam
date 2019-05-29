@@ -4,6 +4,7 @@
 Usage:
   slipspam bench [-v] [--executions=<nb>] [--test-size=<size>]
   slipspam predict [-v] [-t] (<email-text> | --in-text=<file> | --in-feat=<file>)
+  slipspam parse --in=<file> --out=<file>
   slipspam -h | --help
   slipspam --version
 
@@ -16,12 +17,16 @@ Options:
   -t                           Translated for human readability
   --in-text=<file>             Path to a file containing the text of a mail to classify.
   --in-feat=<file>             Path to a file containing a csv of features compliant with spambase.
+  -i <file>, --in=<file>       Path to input file must be a csv with the first column being the emails text
+  -o <file>, --out=<file>      Path to output file
 """
 from src.algorithms import NaiveBayes, Svm, Knn, GradientBoosting, Mpl, Rfc
 from src.dataset import Dataset
 from src.benchmark import run_bench
-from src.utils import text2features, trans_label
-from pandas import read_csv
+from src.utils import text2features, vtext2features, vtrans_label
+import numpy as np
+import pandas as pd
+from tqdm import tqdm
 from docopt import docopt
 
 args = docopt(__doc__, version='SlipSpam 1.0-beta.1')
@@ -50,14 +55,21 @@ elif args['predict']:
     if args['--in-text']:
         f = open(args['--in-text'], "r")
         text = f.read()
+        f.close()
         features = [text2features(text)]
     if args['--in-feat']:
-        features = read_csv(args['--in-feat']).to_numpy()[:, :57]
+        features = pd.read_csv(args['--in-feat']).to_numpy()[:, :57]
     dataset = Dataset(test_size=test_size)
     if verbose:
         print(features)
     results = Rfc(dataset).predict('optimize', features)
     if args['-t']:
-        print([trans_label(i) for i in results])
+        print(vtrans_label(results))
     else:
         print(results)
+elif args['parse']:
+    in_file = args['--in']
+    tqdm.pandas()
+    email_df = pd.read_csv(in_file)
+    features = email_df.progress_apply(lambda x: text2features(x['text']), axis=1, result_type='expand')
+    features.to_csv(args['--out'], header=False, index=False)
