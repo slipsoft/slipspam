@@ -5,6 +5,7 @@ from nltk.stem import WordNetLemmatizer
 import numpy as np
 
 NLTK_DATA_DIR = 'dev/nltk_data'
+download('punkt', NLTK_DATA_DIR, quiet=True)
 
 
 def normalize(cm):
@@ -73,10 +74,6 @@ COUNT_CHARS = [
 
 
 def text2features(text: str):
-    download('punkt', NLTK_DATA_DIR, quiet=True)
-    # download('wordnet', NLTK_DATA_DIR, quiet=True)
-    # lemmatizer=WordNetLemmatizer()
-
     tokens = word_tokenize(text)
     total_nb_words = len(tokens)
     total_nb_chars = len(text)
@@ -88,7 +85,6 @@ def text2features(text: str):
     features = [0 for i in range(57)]
 
     for i in tokens:
-        # word = lemmatizer.lemmatize(i.lower())
         word = i.lower()
         if word in COUNT_WORDS:
             idx = COUNT_WORDS.index(word)
