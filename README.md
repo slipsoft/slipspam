@@ -2,9 +2,48 @@
 
 Ultimate spam detector
 
-![algorithms benchmark chart](docs/benchmark5.png)
-![interleaved confusion matrix](docs/confusion-matrix1.png)
+## Presentation
 
+Slipspam consists of a command line program that can do 3 things:
+- benchmarks: [`bench`](#bench-command)
+- predictions: [`predict`](#predict-command)
+- email data minig: [`parse`](#parse-command)
+
+### `bench` command
+
+```
+bin/slipspam bench [options]
+```
+
+This command runs a full benchmark of every implemented algorithms over a dataset.
+
+Here are the results of the latest benchark over the [spambase dataset](http://archive.ics.uci.edu/ml/datasets/spambase):
+
+![spambase algorithms benchmark chart](docs/benchmark5.png)
+![spambase interleaved confusion matrix](docs/confusion-matrix1.png)
+
+And here over a [spam dataset found on kaggle](https://www.kaggle.com/karthickveerakumar/spam-filter):
+
+![algorithms benchmark chart](docs/benchmark-emails1.png)
+![interleaved confusion matrix](docs/confusion-matrix-emails1.png)
+
+### `predict` command
+
+```
+bin/slipspam predict [options] (<email-text> | --in-text=<file> | --in-feat=<file>)
+```
+
+This command enables you to predict if a mail is spam or not. It can also run the algorithm on a full dataset via the `--in-feat` option.
+![predict command](./docs/predict-command.png)
+
+### `parse` command
+
+```
+bin/slipspam parse --in=<file> --out=<file>
+```
+
+This command convert a dataset of text mails into a dataset of features corresponding to the ones our algorithm is trained on.
+![parse command](./docs/parse-command.png)
 
 ## Getting Started
 

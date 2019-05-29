@@ -3,7 +3,8 @@
 
 Usage:
   slipspam bench [-v] [--drop-col=<nb>...] [--executions=<nb>] [--test-size=<size>] [--dataset=<file>]
-  slipspam predict [-v] [-t] [--drop-col=<nb>...] [--dataset=<file>] (<email-text> | --in-text=<file> | --in-feat=<file>)
+  slipspam predict (<email-text> | --in-text=<file> | --in-feat=<file>) [-v] [-t] [--drop-col=<nb>...]
+                   [--dataset=<file>]
   slipspam parse --in=<file> --out=<file>
   slipspam -h | --help
   slipspam --version
@@ -14,7 +15,7 @@ Options:
   -v                           Verbose.
   -d <nb>, --drop-col=<nb>     Drop a column from the dataset (can be repeted) [default: 26 27].
   -e <nb>, --executions=<nb>   Number of executions [default: 5].
-  --test-size=<size>           Proportion of the dataset to use for the tests [default: 0.8].
+  --test-size=<size>           Proportion of the dataset to use for the tests [default: 0.2].
   --dataset=<file>             Path to a dataset (from data/) [default: spambase.csv].
   -t                           Translated for human readability.
   --in-text=<file>             Path to a file containing the text of a mail to classify.
