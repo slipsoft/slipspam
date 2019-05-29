@@ -127,3 +127,5 @@ def trans_label(label):
 
 
 vtrans_label = np.vectorize(trans_label)
+
+vint = np.vectorize(int)

@@ -105,7 +105,7 @@ class Svm(Algorithm):
 
 class Knn(Algorithm):
     def configurations(self):
-        return [self.separateScaleSelected]
+        return [self.scaledDistance]
 
     def basic(self):
         return KNeighborsClassifier(n_neighbors=5)

@@ -2,8 +2,8 @@
 """SlipSapm.
 
 Usage:
-  slipspam bench [-v] [--executions=<nb>] [--test-size=<size>] [--dataset=<file>]
-  slipspam predict [-v] [-t] [--dataset=<file>] (<email-text> | --in-text=<file> | --in-feat=<file>)
+  slipspam bench [-v] [--drop-col=<nb>...] [--executions=<nb>] [--test-size=<size>] [--dataset=<file>]
+  slipspam predict [-v] [-t] [--drop-col=<nb>...] [--dataset=<file>] (<email-text> | --in-text=<file> | --in-feat=<file>)
   slipspam parse --in=<file> --out=<file>
   slipspam -h | --help
   slipspam --version
@@ -11,20 +11,21 @@ Usage:
 Options:
   -h --help                    Show this screen.
   --version                    Show version.
-  -v                           Verbose
+  -v                           Verbose.
+  -d <nb>, --drop-col=<nb>     Drop a column from the dataset (can be repeted) [default: 26 27].
   -e <nb>, --executions=<nb>   Number of executions [default: 5].
   --test-size=<size>           Proportion of the dataset to use for the tests [default: 0.8].
-  --dataset=<file>             Path to a dataset (from data/) [default: spambase.csv]
-  -t                           Translated for human readability
+  --dataset=<file>             Path to a dataset (from data/) [default: spambase.csv].
+  -t                           Translated for human readability.
   --in-text=<file>             Path to a file containing the text of a mail to classify.
   --in-feat=<file>             Path to a file containing a csv of features compliant with spambase.
   -i <file>, --in=<file>       Path to input file must be a csv with to columns: [text, spam]
-  -o <file>, --out=<file>      Path to output file
+  -o <file>, --out=<file>      Path to output file.
 """
 from src.algorithms import NaiveBayes, Svm, Knn, GradientBoosting, Mpl, Rfc
 from src.dataset import Dataset
 from src.benchmark import run_bench
-from src.utils import text2features, vtext2features, vtrans_label
+from src.utils import text2features, vtext2features, vtrans_label, vint
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
@@ -46,10 +47,15 @@ algos = [
 repetition = int(args['--executions'])
 test_size = float(args['--test-size'])
 data_file = args['--dataset']
+drop_cols = vint(args['--drop-col'])
 verbose = args['-v']
 
 if args['bench']:
-    run_bench(algos, repetition, test_size, data_file)
+    run_bench(algos,
+        repetition=repetition,
+        test_size=test_size,
+        file=data_file,
+        drop_cols=drop_cols)
 elif args['predict']:
     if args['<email-text>']:
         text = args['<email-text>']
@@ -61,12 +67,12 @@ elif args['predict']:
         features = [text2features(text)]
     if args['--in-feat']:
         features = pd.read_csv(args['--in-feat']).to_numpy()[:, :57]
-    dataset = Dataset(test_size=test_size, file=data_file)
+    dataset = Dataset(test_size=test_size, file=data_file, drop_cols=drop_cols)
     if verbose:
         print(features)
     results = Rfc(dataset).predict('optimize', features)
     if args['-t']:
-        print(vtrans_label(results))
+        print(vtrans_label(results).tolist())
     else:
         print(results)
 elif args['parse']:
