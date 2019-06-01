@@ -68,6 +68,15 @@ class Algorithm(ABC):
         model.fit(self.set.train_feat, self.set.train_labl)
         return self.predict_classic(model, features)
 
+    def trueIndex(self, columnIndex):
+        """Return the true index of a column based on the list of columns dropped from the dataset"""
+        index = columnIndex
+        for i in self.set.drop_cols:
+            if i <= columnIndex:
+                index -= 1
+        value = index if index >= 0 else 0
+        return value
+
     @abstractmethod
     def configurations(self):
         """Return an array of functions returning a model to fit"""
@@ -105,7 +114,7 @@ class Svm(Algorithm):
 
 class Knn(Algorithm):
     def configurations(self):
-        return [self.scaledDistance]
+        return [self.separateScaleSelected]
 
     def basic(self):
         return KNeighborsClassifier(n_neighbors=5)
@@ -124,10 +133,10 @@ class Knn(Algorithm):
 
     def separateScale(self):
         ct = ColumnTransformer([
-            ("wordFreq", StandardScaler(), slice(0, 48)),
-            ("charFreq", StandardScaler(), slice(48, 54)),
-            ("continuousCapital", StandardScaler(), slice(54, 56)),
-            ("longestCapital", StandardScaler(), [56])
+            ("wordFreq", StandardScaler(), slice(self.trueIndex(0), self.trueIndex(48))),
+            ("charFreq", StandardScaler(), slice(self.trueIndex(48), self.trueIndex(54))),
+            ("continuousCapital", StandardScaler(), slice(self.trueIndex(54), self.trueIndex(56))),
+            ("longestCapital", StandardScaler(), [self.trueIndex(56)])
         ])
         return make_pipeline(
             ct,
@@ -136,10 +145,10 @@ class Knn(Algorithm):
 
     def separateScaleSelected(self):
         ct = ColumnTransformer([
-            ("wordFreq", StandardScaler(), slice(0, 48)),
-            ("charFreq", StandardScaler(), slice(48, 54)),
-            ("continuousCapital", StandardScaler(), slice(54, 56)),
-            ("longestCapital", StandardScaler(), [56])
+            ("wordFreq", StandardScaler(), slice(self.trueIndex(0), self.trueIndex(48))),
+            ("charFreq", StandardScaler(), slice(self.trueIndex(48), self.trueIndex(54))),
+            ("continuousCapital", StandardScaler(), slice(self.trueIndex(54), self.trueIndex(56))),
+            ("longestCapital", StandardScaler(), [self.trueIndex(56)])
         ])
         return make_pipeline(
             ct,
@@ -169,22 +178,24 @@ class GradientBoosting(Algorithm):
     def configurations(self):
         return [self.basic, self.heavyTune, self.separateScale]
 
-    def basic(self) :
+    def basic(self):
         return GBC()
 
-    def heavyTune(self) :
-        return GBC(learning_rate=0.01, n_estimators=1500,max_depth=4, 
-        min_samples_split=40, min_samples_leaf=7,max_features=4 , subsample=0.95, random_state=10)
+    def heavyTune(self):
+        return GBC(learning_rate=0.01, n_estimators=1500, max_depth=4,
+        min_samples_split=40, min_samples_leaf=7, max_features=4, subsample=0.95, random_state=10)
 
     # def scaled(self):
     #     return make_pipeline(
     #         MinMaxScaler(),
     #         GBC(loss='deviance',
     #         learning_rate=0.3, n_estimators=50))
-    def separateScale(self) : 
+    def separateScale(self):
         minmaxCT = ColumnTransformer([
-            ("wordFreq", MinMaxScaler(), slice(0, 48)),
-            ("charFreq", MinMaxScaler(), slice(48, 54))
+            ("wordFreq", MinMaxScaler(), slice(self.trueIndex(0), self.trueIndex(48))),
+            ("charFreq", MinMaxScaler(), slice(self.trueIndex(48), self.trueIndex(54))),
+            ("continuousCapital", MinMaxScaler(), slice(self.trueIndex(54), self.trueIndex(56))),
+            ("longestCapital", MinMaxScaler(), [self.trueIndex(56)])
         ])
         return make_pipeline(minmaxCT,
             GBC(loss='deviance',
