@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from .dataset import Dataset
 from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import MinMaxScaler
 from sklearn.compose import ColumnTransformer
 from sklearn.decomposition import PCA
 from sklearn.naive_bayes import BernoulliNB
@@ -12,7 +13,6 @@ from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.ensemble import GradientBoostingClassifier as GBC
 from sklearn.tree import DecisionTreeClassifier as DTC
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_selection import VarianceThreshold
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from time import time
 
@@ -167,18 +167,28 @@ class Knn(Algorithm):
 class GradientBoosting(Algorithm):
 
     def configurations(self):
-        return [self.basic, self.scaled]
+        return [self.basic, self.heavyTune, self.separateScale]
 
-    def basic(self):
-        return GBC(loss='deviance',
-            learning_rate=0.3, n_estimators=50)
+    def basic(self) :
+        return GBC()
 
-    def scaled(self):
-        return make_pipeline(
-            StandardScaler(),
-            VarianceThreshold(threshold=.35 * (1 - .35)),
+    def heavyTune(self) :
+        return GBC(learning_rate=0.01, n_estimators=1500,max_depth=4, 
+        min_samples_split=40, min_samples_leaf=7,max_features=2 , subsample=0.95, random_state=10)
+
+    # def scaled(self):
+    #     return make_pipeline(
+    #         MinMaxScaler(),
+    #         GBC(loss='deviance',
+    #         learning_rate=0.3, n_estimators=50))
+    def separateScale(self) : 
+        minmaxCT = ColumnTransformer([
+            ("wordFreq", MinMaxScaler(), slice(0, 48)),
+            ("charFreq", MinMaxScaler(), slice(48, 54))
+        ])
+        return make_pipeline(minmaxCT,
             GBC(loss='deviance',
-            learning_rate=0.3, n_estimators=50, max_features=0.9))
+            learning_rate=0.3, n_estimators=50))
 
 
 class Mpl(Algorithm):
