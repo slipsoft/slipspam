@@ -1,4 +1,5 @@
 from sklearn.model_selection import train_test_split
+# from sklearn.model_selection import KFold
 from sklearn.datasets.base import load_data
 import pandas as pd
 
@@ -22,7 +23,10 @@ class Dataset:
         self.train_labl = []
         self.test_feat = []
         self.test_labl = []
+        # self.train_index = []
+        # self.test_index = []
         self.initSets()
+
 
     def initSets(self):
         """Init the datasets features and labels from the data directory's csv files"""
@@ -31,3 +35,6 @@ class Dataset:
         features = data_frame.iloc[:, :-1].values
         labels = data_frame.iloc[:, -1].values
         self.train_feat, self.test_feat, self.train_labl, self.test_labl = train_test_split(features, labels, test_size=self.test_size)
+        # kfold = KFold(n_splits=3)
+        # self.train_index, self.test_index = kfold.split(features,labels)
+

@@ -174,7 +174,7 @@ class GradientBoosting(Algorithm):
 
     def heavyTune(self) :
         return GBC(learning_rate=0.01, n_estimators=1500,max_depth=4, 
-        min_samples_split=40, min_samples_leaf=7,max_features=2 , subsample=0.95, random_state=10)
+        min_samples_split=40, min_samples_leaf=7,max_features=4 , subsample=0.95, random_state=10)
 
     # def scaled(self):
     #     return make_pipeline(
