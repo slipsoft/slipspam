@@ -6,7 +6,7 @@ Usage:
                  [--trainset=<file>] [--testset=<file>]
   slipspam predict (<email-text> | --in-text=<file> | --in-feat=<file>) [-v] [-t] [--drop-col=<nb>...]
                    [--trainset=<file>]
-  slipspam parse --in=<file> --out=<file>
+  slipspam parse <in-file> <out-file>
   slipspam -h | --help
   slipspam --version
 
@@ -22,8 +22,7 @@ Options:
   -t                           Translated for human readability.
   --in-text=<file>             Path to a file containing the text of a mail to classify.
   --in-feat=<file>             Path to a file containing a csv of features compliant with spambase.
-  -i <file>, --in=<file>       Path to input file must be a csv with to columns: [text, spam]
-  -o <file>, --out=<file>      Path to output file.
+  <in-file>                    Path to input file must be a csv with to columns: [text, spam]
 """
 from src.algorithms import NaiveBayes, Svm, Knn, GradientBoosting, Mpl, Rfc
 from src.dataset import Dataset
@@ -82,9 +81,9 @@ elif args['predict']:
     else:
         print(results)
 elif args['parse']:
-    in_file = args['--in']
+    in_file = args['<in-file>']
     tqdm.pandas()
     email_df = pd.read_csv(in_file)
     features = email_df.progress_apply(lambda x: text2features(x['text']), axis=1, result_type='expand')
     features['spam'] = email_df['spam']
-    features.to_csv(args['--out'], header=False, index=False)
+    features.to_csv(args['<out-file>'], header=False, index=False)

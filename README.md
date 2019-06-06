@@ -45,7 +45,7 @@ This command enables you to predict if a mail is spam or not. It can also run th
 ### `parse` command
 
 ```
-bin/slipspam parse --in=<file> --out=<file>
+bin/slipspam parse <in-file> <out-file>
 ```
 
 This command convert a dataset of text mails into a dataset of features corresponding to the ones our algorithm is trained on.
