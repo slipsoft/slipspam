@@ -1,20 +1,24 @@
 from abc import ABC, abstractmethod
+from time import time
+
 from .dataset import Dataset
-from sklearn.preprocessing import StandardScaler
-from sklearn.preprocessing import MinMaxScaler
+
+# SkLearn Utils
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import make_pipeline
+from sklearn.metrics import accuracy_score, confusion_matrix
+
+# SkLearn Algorithms
 from sklearn.decomposition import PCA
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import svm
 from sklearn.neural_network import MLPClassifier
-from sklearn.pipeline import make_pipeline
-from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.ensemble import GradientBoostingClassifier as GBC
 from sklearn.tree import DecisionTreeClassifier as DTC
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
-from time import time
 
 
 class Algorithm(ABC):

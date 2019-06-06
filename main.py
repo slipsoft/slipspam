@@ -2,9 +2,10 @@
 """SlipSapm.
 
 Usage:
-  slipspam bench [-v] [--drop-col=<nb>...] [--executions=<nb>] [--test-size=<size>] [--dataset=<file>]
+  slipspam bench [-v] [--drop-col=<nb>...] [--executions=<nb>] [--test-size=<size>]
+                 [--trainset=<file>] [--testset=<file>]
   slipspam predict (<email-text> | --in-text=<file> | --in-feat=<file>) [-v] [-t] [--drop-col=<nb>...]
-                   [--dataset=<file>]
+                   [--trainset=<file>]
   slipspam parse --in=<file> --out=<file>
   slipspam -h | --help
   slipspam --version
@@ -12,11 +13,12 @@ Usage:
 Options:
   -h --help                    Show this screen.
   --version                    Show version.
-  -v                           Verbose.
+  -v                           Be verbose.
   -d <nb>, --drop-col=<nb>     Drop a column from the dataset (can be repeted) [default: 26 27].
   -e <nb>, --executions=<nb>   Number of executions [default: 5].
   --test-size=<size>           Proportion of the dataset to use for the tests [default: 0.2].
-  --dataset=<file>             Path to a dataset (from data/) [default: spambase.csv].
+  --trainset=<file>            Path of the training dataset file (from data/) [default: spambase.csv].
+  --testset=<file>             Path of the test dataset file (from data/) [default is trainset file].
   -t                           Translated for human readability.
   --in-text=<file>             Path to a file containing the text of a mail to classify.
   --in-feat=<file>             Path to a file containing a csv of features compliant with spambase.
@@ -47,7 +49,8 @@ algos = [
 ]
 repetition = int(args['--executions'])
 test_size = float(args['--test-size'])
-data_file = args['--dataset']
+trainset = args['--trainset']
+testset = args['--testset']
 drop_cols = vint(args['--drop-col'])
 verbose = args['-v']
 
@@ -55,7 +58,8 @@ if args['bench']:
     run_bench(algos,
         repetition=repetition,
         test_size=test_size,
-        file=data_file,
+        trainset=trainset,
+        testset=testset,
         drop_cols=drop_cols)
 elif args['predict']:
     if args['<email-text>']:
@@ -69,7 +73,7 @@ elif args['predict']:
     if args['--in-feat']:
         data_frame = pd.read_csv(args['--in-feat'], header=None).drop(columns=drop_cols)
         features = data_frame.iloc[:, :-1].values
-    dataset = Dataset(test_size=test_size, file=data_file, drop_cols=drop_cols)
+    dataset = Dataset(test_size=test_size, trainset=trainset, drop_cols=drop_cols)
     if verbose:
         print(features)
     results = Rfc(dataset).predict('optimize', features)

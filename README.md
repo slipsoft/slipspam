@@ -22,10 +22,15 @@ Here are the results of the latest benchark over the [spambase dataset](http://a
 ![spambase algorithms benchmark chart](docs/benchmark5.png)
 ![spambase interleaved confusion matrix](docs/confusion-matrix1.png)
 
-And here over a [spam dataset found on kaggle](https://www.kaggle.com/karthickveerakumar/spam-filter):
+here over a [spam dataset found on kaggle](https://www.kaggle.com/karthickveerakumar/spam-filter):
 
 ![algorithms benchmark chart](docs/benchmark-emails1.png)
 ![interleaved confusion matrix](docs/confusion-matrix-emails1.png)
+
+and here with spambase as the trainset and kaggle's as the testset:
+
+![algorithms benchmark chart](docs/benchmark-mixed1.png)
+![interleaved confusion matrix](docs/confusion-matrix-mixed1.png)
 
 ### `predict` command
 
